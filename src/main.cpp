@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2013 The Dropcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -1299,7 +1300,8 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
     const CBigNum &bnLimit = Params().ProofOfWorkLimit();
     // Testnet has min-difficulty blocks
     // after nTargetSpacing*2 time between blocks:
-    if (TestNet() && nTime > nTargetSpacing*2)
+    //if (TestNet() && nTime > nTargetSpacing*2)
+    if (nTime > nTargetSpacing*2)    
         return bnLimit.GetCompact();
 
     CBigNum bnResult;
@@ -1327,8 +1329,8 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     // Only change once per interval
     if ((pindexLast->nHeight+1) % nInterval != 0)
     {
-        if (TestNet())
-        {
+        //if (TestNet())
+        //{
             // Special difficulty rule for testnet:
             // If the new block's timestamp is more than 2* 10 minutes
             // then allow mining of a min-difficulty block.
@@ -1342,7 +1344,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
                     pindex = pindex->pprev;
                 return pindex->nBits;
             }
-        }
+        //}
         return pindexLast->nBits;
     }
 
@@ -1577,7 +1579,7 @@ void UpdateTime(CBlockHeader& block, const CBlockIndex* pindexPrev)
     block.nTime = max(pindexPrev->GetMedianTimePast()+1, GetAdjustedTime());
 
     // Updating time can change work required on testnet:
-    if (TestNet())
+    //if (TestNet())
         block.nBits = GetNextWorkRequired(pindexPrev, &block);
 }
 
